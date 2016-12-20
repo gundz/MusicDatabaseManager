@@ -21,25 +21,36 @@ function TagNode( $node , $path )
 	return ( $node );
 }
 
-function calculateBitrate($xml_folder_node)
+function calculateFolderNodeBitrate( $xml_folder_node )
 {
-	$tags = $root->getElementsByTagName("file");
+	$tags = $xml_folder_node->getElementsByTagName( "file" );
 
 	$total_bitrate = 0;
+	$total_bitrate_mode = array();
+	$total_format = array();
+
 	$i = 0;
-	foreach($tags as $file)
+	foreach( $tags as $tag )
 	{
-		if ($tag->hasAttribute("bitrate"))
+		if ($tag->hasAttribute( "bitrate" ))
 		{
-			$bitrate = explode(" ", $tag->getAttribute("bitrate"))[0];
+			$bitrate = explode( " " , $tag->getAttribute( "bitrate" ))[0];
+			$total_bitrate_mode[] = $tag->getAttribute( 'bitrate_mode' );
+			$total_format[] = $tag->getAttribute( 'format' );
+
 			$total_bitrate += $bitrate;
 			$i++;
 		}
 	}
-	$total_bitrate = floor($total_bitrate / $i);
+	$total_bitrate = floor( $total_bitrate / $i );
 
-	$var = $tags->item(0)->parentNode;
-	$var->setAttribute('folder_bitrate', $total_bitrate);
+	$dir = $tags->item(0)->parentNode;
+	
+	$dir->setAttribute( 'folder_bitrate' , $total_bitrate );
+	$dir->setAttribute( 'folder_bitrate_format', implode(";", array_unique($total_format)));
+	$dir->setAttribute( 'folder_bitrate_mode', implode(";", array_unique($total_bitrate_mode)));
+	
+	return ($xml_folder_node);
 }
 
 function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
@@ -72,23 +83,7 @@ function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
 
 	if ($nbrSubDir == 0)
 	{
-		$listePays = $root->getElementsByTagName("file");
-
-		$total_bitrate = 0;
-		$i = 0;
-		foreach($listePays as $pays)
-		{
-			if ($pays->hasAttribute("bitrate"))
-			{
-				$bitrate = explode(" ", $pays->getAttribute("bitrate"))[0];
-				$total_bitrate += $bitrate;
-				$i++;
-			}
-		}
-		$total_bitrate = floor($total_bitrate / $i);
-
-		$var = $listePays->item(0)->parentNode;
-		$var->setAttribute('folder_bitrate', $total_bitrate);
+		calculateFolderNodeBitrate( $root );
 	}
 	return ( $root );
 }
