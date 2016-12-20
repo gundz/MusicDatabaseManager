@@ -103,7 +103,7 @@ function updateFileFolder($xml_file_path, $file_path = null)
 	$dom = new DOMDocument();
 	$dom->load( $xml_file_path );
 
-	$tags = $dom->getElementsByTagName("dir");
+	$tags = $dom->getElementsByTagName( "dir" );
 	foreach( $tags as $tag )
 	{
 		if ($tag->hasAttribute( "path" ) )
@@ -119,15 +119,15 @@ function updateFileFolder($xml_file_path, $file_path = null)
 	return ( $dom );
 }
 
-if (!file_exists($xml_file_path))
+if ( !file_exists( $xml_file_path ) )
 {
-	$xml = generateXMLFromDir($path);
-	$xml->save($xml_file_path);	
+	$xml = generateXMLFromDir( $path );
+	$xml->save( $xml_file_path );	
 }
 else
 {
-	$xml = updateFileFolder($xml_file_path, "Test_Dir/test/supertest/live.mp3");
-	$xml->save($xml_file_path);	
+	$xml = updateFileFolder( $xml_file_path , "Test_Dir/test/supertest/live.mp3" );
+	$xml->save( $xml_file_path );	
 }
 
 ?>
