@@ -47,10 +47,10 @@ function calculateFolderNodeBitrate( $xml_folder_node )
 	$dir = $tags->item(0)->parentNode;
 	
 	$dir->setAttribute( 'folder_bitrate' , $total_bitrate );
-	$dir->setAttribute( 'folder_bitrate_format', implode(";", array_unique($total_format)));
-	$dir->setAttribute( 'folder_bitrate_mode', implode(";", array_unique($total_bitrate_mode)));
+	$dir->setAttribute( 'folder_bitrate_format' , implode( ";" , array_unique( $total_format ) ) );
+	$dir->setAttribute( 'folder_bitrate_mode' , implode( ";" , array_unique( $total_bitrate_mode ) ) );
 	
-	return ($xml_folder_node);
+	return ( $xml_folder_node );
 }
 
 function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
@@ -95,31 +95,39 @@ function generateXMLFromDir( $path )
 	$sub = fillArrayWithFileNodes( new DirectoryIterator( $path ) , $xml );
 	$xml->appendChild( $sub );
 
-	$xml = $xml->saveXML();
-	echo $xml;
 	return ( $xml );
 }
 
-function test($xml_file, $file_path = null)
+function updateFileFolder($xml_file_path, $file_path = null)
 {
 	$dom = new DOMDocument();
-	$dom->loadXML($xml_file);
+	$dom->load( $xml_file_path );
 
-
-	$listePays = $dom->getElementsByTagName("file");
-	foreach($listePays as $pays)
+	$tags = $dom->getElementsByTagName("dir");
+	foreach( $tags as $tag )
 	{
-		echo $pays->nodeValue;
-		if ($pays->hasAttribute("path"))
+		if ($tag->hasAttribute( "path" ) )
 		{
-			echo $pays->parentNode->getAttribute("path") . " - " . basename($pays->getAttribute("path"));
+			if ($tag->getAttribute( "path" ) == dirname( $file_path ) )
+			{
+				$new = ( fillArrayWithFileNodes( new DirectoryIterator( $tag->parentNode->getAttribute( "path" ) ) , $dom, $tag->parentNode ) );
+				$tag->parentNode->replaceChild( $new, $tag );
+				break ;
+			}
 		}
-		echo "\n";
 	}
+	return ( $dom );
 }
 
-$xml = generateXMLFromDir($path);
-
-// test($xml);
+if (!file_exists($xml_file_path))
+{
+	$xml = generateXMLFromDir($path);
+	$xml->save($xml_file_path);	
+}
+else
+{
+	$xml = updateFileFolder($xml_file_path, "Test_Dir/test/supertest/live.mp3");
+	$xml->save($xml_file_path);	
+}
 
 ?>
