@@ -11,30 +11,6 @@ function getMediaInfos( $file_path )
 	return ( $ret );
 }
 
-function createFileNode( $dom , $file_path )
-{
-	$ret = getMediaInfos( $file_path );
-	$array = array_map( 'trim' , explode( ":" , $ret ) );
-	if (count($array) != 3)
-		return ( null );
-
-	$node = $dom->createElement( 'file' );
-
-	$node->setAttribute( 'path' , $file_path );
-	$node->setAttribute( 'format' , $array[0] );
-	$node->setAttribute( 'bitrate' , explode ( " " , $array[1] )[0] );
-	$node->setAttribute( 'bitrate_mode' , $array[2] );
-
-	return ( $node );
-}
-
-function createDirNode( $dom , $path )
-{
-	$dirNode = $dom->createElement( 'dir' );
-	$dirNode->setAttribute( 'path' , $path );
-	return ( $dirNode );
-}
-
 function calculateDirNodeAverageQuality( $folder_node )
 {
 	$files = $folder_node->getElementsByTagName( "file" );
@@ -118,6 +94,23 @@ function generateXMLFromDir( $path )
 	return ( $dom );
 }
 
+function createFileNode( $dom , $file_path )
+{
+	$ret = getMediaInfos( $file_path );
+	$array = array_map( 'trim' , explode( ":" , $ret ) );
+	if ( count( $array ) != 3)
+		return ( null );
+
+	$node = $dom->createElement( 'file' );
+
+	$node->setAttribute( 'path' , $file_path );
+	$node->setAttribute( 'format' , $array[0] );
+	$node->setAttribute( 'bitrate' , explode ( " " , $array[1] )[0] );
+	$node->setAttribute( 'bitrate_mode' , $array[2] );
+
+	return ( $node );
+}
+
 function updateFileNode( $dom , $file_path )
 {
 	$files = $dom->getElementsByTagName( "file" );
@@ -137,12 +130,80 @@ function updateFileNode( $dom , $file_path )
 	return ( $dom );
 }
 
+function deleteFileNode( $dom , $file_path )
+{
+	$files = $dom->getElementsByTagName( "file" );
+
+	foreach ( $files as $file )
+	{
+		if ( $file->hasAttribute( "path" ) )
+		{
+			if ( $file->getAttribute( "path" ) == $file_path )
+			{
+				$file->parentNode->removeChild( $file );
+				break ;
+			}
+		}
+	}
+	return ( $dom );
+}
+
+function createDirNode( $dom , $path )
+{
+	$dirNode = $dom->createElement( 'dir' );
+	$dirNode->setAttribute( 'path' , $path );
+	return ( $dirNode );
+}
+
+function updateDirNode( $dom , $file_path )
+{
+	$files = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $files as $file )
+	{
+		if ( $file->hasAttribute( "path" ) )
+		{
+			if ( $file->getAttribute( "path" ) == $dir_path )
+			{
+				$new_node = scanDirectory( $dom , $dir_path );
+				$file->parentNode->replaceChild( $new_node , $file );
+				break ;
+			}
+		}
+	}
+	return ( $dom );
+}
+
+function deleteDirNode( $dom , $dir_path )
+{
+	$files = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $files as $file )
+	{
+		if ( $file->hasAttribute( "path" ) )
+		{
+			if ( $file->getAttribute( "path" ) == $dir_path )
+			{
+				$file->parentNode->removeChild( $new_node , $file );
+				break ;
+			}
+		}
+	}
+	return ( $dom );
+}
+
+if ( !file_exists("database.xml") )
+{
+	$dom = generateXMLFromDir( "Test_dir" );
+	$dom->save( "database.xml" );
+}
 
 $dom = new DOMDocument();
-$dom->load("database.xml");
+$dom->load( "database.xml" );
 
-$dom = updateFileNode( $dom , "Test_dir/file.mp3" );
+$dom = updateDirNode( $dom , "Test_dir" );
 
-echo $dom->saveXML();
+echo $dom->SaveXML();
+$dom->save( "database.xml" );
 
 ?>
