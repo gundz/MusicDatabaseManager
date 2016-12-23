@@ -53,9 +53,19 @@ function calculateFolderNodeBitrate( $xml_folder_node )
 	return ( $xml_folder_node );
 }
 
+function is_dir_empty($dir) {
+  if (!is_readable($dir)) return NULL; 
+  return (count(scandir($dir)) == 2);
+}
+
+
 function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
 {
 	$nbrSubDir = 0;
+	$nbrSubFiles = 0;
+
+	if (is_dir_empty($dir->getPath()))
+		return (null);
 
 	$root = $xml->createElement( 'dir' );
 	$root->setAttribute( 'path' , $dir->getPath() );
@@ -78,10 +88,12 @@ function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
 			$node = TagNode( $sub, $path );
 
 			$root->appendChild( $sub );
+
+			$nbrSubFiles++;
 		}
 	}
 
-	if ($nbrSubDir == 0)
+	if ($nbrSubDir == 0 && $nbrSubFiles > 0)
 	{
 		calculateFolderNodeBitrate( $root );
 	}
@@ -91,27 +103,44 @@ function fillArrayWithFileNodes( DirectoryIterator $dir , $xml , $root = null)
 function generateXMLFromDir( $path )
 {
 	$xml = new DOMDocument( '1.0' , 'utf-8' );
+	$root = $xml->createElement( 'root' );
+	$xml->appendChild($root);
 
-	$sub = fillArrayWithFileNodes( new DirectoryIterator( $path ) , $xml );
-	$xml->appendChild( $sub );
+
+	$sub = fillArrayWithFileNodes( new DirectoryIterator( $path ) , $xml);
+	if ($sub !== null)
+		$root->appendChild( $sub );
 
 	return ( $xml );
 }
 
-function updateFileFolder($xml_file_path, $file_path = null)
+function updateFileFolder( $xml_file_path , $file_path )
 {
 	$dom = new DOMDocument();
 	$dom->load( $xml_file_path );
 
 	$tags = $dom->getElementsByTagName( "dir" );
+	if ($tags->length == 0)
+	{
+		$root = $dom->childNodes->item(0);
+		$sub = fillArrayWithFileNodes( new DirectoryIterator( $file_path ) , $dom, $root);
+		if ($sub !== null)
+			$root->appendChild( $sub );
+		return ($dom);
+	}
 	foreach( $tags as $tag )
 	{
 		if ($tag->hasAttribute( "path" ) )
 		{
-			if ($tag->getAttribute( "path" ) == dirname( $file_path ) )
+			if (!is_dir($tag->getAttribute( "path" )))
+				$tag->parentNode->removeChild($tag);
+			if ($tag->getAttribute( "path" ) == basename($file_path) )
 			{
-				$new = ( fillArrayWithFileNodes( new DirectoryIterator( $tag->parentNode->getAttribute( "path" ) ) , $dom, $tag->parentNode ) );
-				$tag->parentNode->replaceChild( $new, $tag );
+				$new = ( fillArrayWithFileNodes( new DirectoryIterator( $file_path ) , $dom, $tag->parentNode ) );
+				if ($new == null)
+					$tag->parentNode->removeChild($tag);
+				else
+					$tag->parentNode->replaceChild( $new, $tag );
 				break ;
 			}
 		}
@@ -122,12 +151,7 @@ function updateFileFolder($xml_file_path, $file_path = null)
 if ( !file_exists( $xml_file_path ) )
 {
 	$xml = generateXMLFromDir( $path );
-	$xml->save( $xml_file_path );	
-}
-else
-{
-	$xml = updateFileFolder( $xml_file_path , "Test_Dir/test/supertest/live.mp3" );
-	$xml->save( $xml_file_path );	
+	$xml->save( $xml_file_path );
 }
 
 ?>
