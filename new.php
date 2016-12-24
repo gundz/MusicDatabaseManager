@@ -40,7 +40,8 @@ function calculateDirNodeAverageQuality( $folder_node )
 	}
 	if ( $nbrFiles <= 0 )
 		return ( false );
-	$total_bitrate = floor( $trueotal_bitrate / $nbrFiles );
+
+	$total_bitrate = floor( $total_bitrate / $nbrFiles );
 
 	$folder_node->setAttribute( 'folder_bitrate' , $total_bitrate );
 	$folder_node->setAttribute( 'folder_bitrate_format' , implode( ";" , array_unique( $total_formats ) ) );
@@ -155,22 +156,27 @@ function createDirNode( $dom , $path )
 	return ( $dirNode );
 }
 
-function updateDirNode( $dom , $file_path )
+function updateDirNode( $dom , $dir_path )
 {
-	$files = $dom->getElementsByTagName( "dir" );
+	$dirs = $dom->getElementsByTagName( "dir" );
 
-	foreach ( $files as $file )
+	if ( !is_dir( $dir_path ) )
+		return ( deleteDirNode( $dom , $dir_path ) );
+
+	foreach ( $dirs as $dir )
 	{
-		if ( $file->hasAttribute( "path" ) )
+		if ( $dir->hasAttribute( "path" ) )
 		{
-			if ( $file->getAttribute( "path" ) == $dir_path )
+			if ( $dir->getAttribute( "path" ) == $dir_path )
 			{
-				$new_node = scanDirectory( $dom , $dir_path );
-				$file->parentNode->replaceChild( $new_node , $file );
-				break ;
+				$new_node = scanDirectory( $dom , new DirectoryIterator( 
+					$dir_path ) );
+				$dir->parentNode->replaceChild( $new_node , $dir );
+				return ( $dom );
 			}
 		}
 	}
+
 	return ( $dom );
 }
 
@@ -184,7 +190,7 @@ function deleteDirNode( $dom , $dir_path )
 		{
 			if ( $file->getAttribute( "path" ) == $dir_path )
 			{
-				$file->parentNode->removeChild( $new_node , $file );
+				$file->parentNode->removeChild( $file );
 				break ;
 			}
 		}
@@ -201,7 +207,7 @@ if ( !file_exists("database.xml") )
 $dom = new DOMDocument();
 $dom->load( "database.xml" );
 
-$dom = updateDirNode( $dom , "Test_dir" );
+$dom = updateDirNode( $dom , "Test_dir/" );
 
 echo $dom->SaveXML();
 $dom->save( "database.xml" );
