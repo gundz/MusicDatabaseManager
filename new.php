@@ -1,6 +1,6 @@
 <?php
 
-$inform_path = "inform.txt";
+include_once("config.php");
 
 function getMediaInfos( $file_path )
 {
@@ -76,10 +76,10 @@ function scanDirectory ( $dom , DirectoryIterator $dirIt )
 		}
 	}
 
-	if ($nbrDirs == 0 && $nbrFiles > 0)
-	{
-		calculateDirNodeAverageQuality( $dirNode );
-	}
+	// if ($nbrDirs == 0 && $nbrFiles > 0)
+	// {
+	// 	calculateDirNodeAverageQuality( $dirNode );
+	// }
 	return ( $dirNode );
 }
 
@@ -198,18 +198,120 @@ function deleteDirNode( $dom , $dir_path )
 	return ( $dom );
 }
 
-if ( !file_exists("database.xml") )
+function fileNodeExists( $dom , $file_path )
 {
-	$dom = generateXMLFromDir( "Test_dir" );
-	$dom->save( "database.xml" );
+	$files = $dom->getElementsByTagName( "file" );
+
+	foreach ( $files as $file )
+	{
+		if ( $file->hasAttribute( "path" ) )
+		{
+			if ( $file->getAttribute( "path" ) == $file_path )
+			{
+				return ( true );
+			}
+		}
+	}
+	return ( false );
 }
 
-$dom = new DOMDocument();
-$dom->load( "database.xml" );
+function addFile( $dom , $file_path )
+{
+	$node = createFileNode( $dom , $file_path );
+	if ($node == null || fileNodeExists( $dom , $file_path ) )
+		return ( false );
 
-$dom = updateDirNode( $dom , "Test_dir/" );
+	$file_dir = dirname( $file_path );
 
-echo $dom->SaveXML();
-$dom->save( "database.xml" );
+	$dirs = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if ( $dir->getAttribute( "path" ) == $file_dir )
+			{
+				$dir->appendChild( $node );
+				break ;
+			}
+		}
+	}
+	return ( true );
+}
+
+function removeFile( $dom , $file_path )
+{
+	$files = $dom->getElementsByTagName( "file" );
+
+	foreach ( $files as $file )
+	{
+		if ( $file->hasAttribute( "path" ) )
+		{
+			if ( $file->getAttribute( "path" ) == $file_path )
+			{
+				$file->parentNode->removeChild( $file );
+				break ;
+			}
+		}
+	}
+}
+
+function addDir( $dom , $dir_path )
+{
+	$node = scanDirectory( $dom , new DirectoryIterator( $dir_path ) );
+
+	$dirs = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if ( $dir->getAttribute( "path" ) == dirname($dir_path) )
+			{
+				$dir->appendChild( $node );
+				break ;
+			}
+		}
+	}
+}
+
+
+if ( !file_exists( $xml_file_path ) )
+{
+	$dom = generateXMLFromDir( $path );
+	$dom->save( $xml_file_path );
+}
+
+print_r($argv);
+
+if ($argc == 4)
+{
+	$dom = new DOMDocument();
+	$dom->load( $xml_file_path );
+
+	if ($argv[1] == "FILE")
+	{
+		if ($argv[2] == "ADD")
+		{
+			addFile( $dom , $argv[3] );
+		}
+		if ($argv[2] == "DELETE")
+		{
+			removeFile( $dom , $argv[3] );
+		}
+	}
+	if ($argv[1] == "DIR")
+	{
+		if ($argv[2] == "ADD")
+		{
+			addDir( $dom , $argv[3] );
+		}
+		if ($argv[2] == "DELETE")
+		{
+			deleteDirNode( $dom , $argv[3] );
+		}
+	}
+	$dom->save( $xml_file_path );
+}
 
 ?>
