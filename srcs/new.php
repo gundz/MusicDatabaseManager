@@ -50,36 +50,37 @@ function calculateDirNodeAverageQuality( $folder_node )
 	return ( true );
 }
 
-function scanDirectory ( $dom , DirectoryIterator $dirIt )
+function scanDirectory ( $dom , DirectoryIterator $dirIt, $dirNode = null)
 {
-	$nbrFiles = 0;
-	$nbrDirs = 0;
-
-	$dirNode = createDirNode( $dom , $dirIt->getPath() );
+	if ($dirNode == null)
+	{
+		echo "ok" .$dirIt->getPath() . PHP_EOL;
+		$dirNode = createDirNode( $dom , $dirIt->getPath() );
+	}
 	foreach ( $dirIt as $dir )
 	{
 		if ( $dir->isDir() && !$dir->isDot() )
 		{
-			$subDir = scanDirectory( $dom , new DirectoryIterator( $dir->getPathName() ) );
-			$dirNode->appendChild( $subDir );
-
-			$nbrDirs++;
+			if (dirNodeExists( $dom , $dir->getPathName() ) == false)
+			{
+				echo "ok2" .  $dir->getPathname() . PHP_EOL;
+				$subDir = scanDirectory( $dom , new DirectoryIterator( $dir->getPathName() ) );
+				echo "ok3" . PHP_EOL;
+				$dirNode->appendChild( $subDir );
+			}
 		}
 		else if ( $dir->isFile() )
 		{
-			$fileNode = createFileNode( $dom , $dir->getPathName() );
-			if ($fileNode === null)
-				continue ;
-			$dirNode->appendChild( $fileNode );
+			if (fileNodeExists( $dom , $dir->getPathName()) == false)
+			{
+				$fileNode = createFileNode( $dom , $dir->getPathName() );
+				if ($fileNode === null)
+					continue ;
+				$dirNode->appendChild( $fileNode );			
+			}
 
-			$nbrFiles++;
 		}
 	}
-
-	// if ($nbrDirs == 0 && $nbrFiles > 0)
-	// {
-	// 	calculateDirNodeAverageQuality( $dirNode );
-	// }
 	return ( $dirNode );
 }
 
@@ -215,6 +216,23 @@ function fileNodeExists( $dom , $file_path )
 	return ( false );
 }
 
+function dirNodeExists( $dom , $file_path )
+{
+	$dirs = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if ( $dir->getAttribute( "path" ) == $file_path )
+			{
+				return ( true );
+			}
+		}
+	}
+	return ( false );
+}
+
 function addFile( $dom , $file_path )
 {
 	$node = createFileNode( $dom , $file_path );
@@ -275,6 +293,143 @@ function addDir( $dom , $dir_path )
 	}
 }
 
+function checkXMLDirs( $dom )
+{
+	$dirs = $dom->getElementsByTagName( "dir" );
+	$ToDelete = array();
+
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if (file_exists( $dir->getAttribute( "path" ) ) )
+			{
+				echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
+			}
+			else
+			{
+				echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
+				$ToDelete[] = $dir;
+			}
+		}
+	}
+	foreach ($ToDelete as $dir)
+	{
+		$dir->parentNode->removeChild( $dir );
+	}
+}
+
+function checkXMLFiles( $dom )
+{
+	$files = $dom->getElementsByTagName( "file" );
+	$ToDelete = array();
+
+	foreach ( $files as $files )
+	{
+		if ( $files->hasAttribute( "path" ) )
+		{
+			if (file_exists( $files->getAttribute( "path" ) ) )
+			{
+				echo "FILE: \"" . $files->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
+			}
+			else
+			{
+				echo "FILE: \"" . $files->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
+				$ToDelete[] = $files;
+			}
+		}
+	}
+	foreach ($ToDelete as $files)
+	{
+		$files->parentNode->removeChild( $files );
+	}
+}
+
+function addDir2( $dom , $dir_path , $root_path )
+{
+	$dirs = $dom->getElementsByTagName( "dir" );
+
+	echo "root_path = " . $root_path . PHP_EOL;
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if ( $dir->getAttribute( "path" ) == $dir_path )
+			{
+				echo "found ! " . $dir->getAttribute( "path" ) . PHP_EOL;
+				scanDirectory( $dom , new DirectoryIterator( $dir->getAttribute( "path" ) ) , $dir );
+				return ;
+			}
+		}
+	}
+	if (dirname($dir_path) != $root_path)
+		addDir2($dom, dirname($dir_path), $root_path);
+}
+
+function addFile2( $dom , $file_path )
+{
+	$dirs = $dom->getElementsByTagName( "dir" );
+
+	foreach ( $dirs as $dir )
+	{
+		if ( $dir->hasAttribute( "path" ) )
+		{
+			if ( $dir->getAttribute( "path" ) == dirname($file_path) )
+			{
+				echo "found ! " . $dir->getAttribute( "path" ) . PHP_EOL;
+				$fileNode = createFileNode( $dom , $file_path );
+				if ($fileNode === null)
+					continue ;
+				$dir->appendChild( $fileNode );
+				return ;
+			}
+		}
+	}
+}
+
+function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
+{
+	if ($dirRoot == null)
+	{
+		$dirRoot = $dirIt->getPathName();
+		echo $dirRoot . PHP_EOL;
+	}
+	foreach ( $dirIt as $dir )
+	{
+		if ( $dir->isDir() && !$dir->isDot() )
+		{
+			if (dirNodeExists( $dom , $dir->getPathName()) )
+			{
+				echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
+			}
+			else
+			{
+				echo "DIR: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
+				addDir2( $dom , $dir->getPathName() , $dirRoot );
+			}
+			checkDirs( $dom , new DirectoryIterator( $dir->getPathName() ) , $dirRoot);
+		}
+		else if ( $dir->isFile() )
+		{
+			if (fileNodeExists( $dom , $dir->getPathName()) )
+			{
+				echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
+			}
+			else
+			{
+				echo "FILE: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
+				addFile2($dom, $dir->getPathname());
+			}
+		}
+	}
+}
+
+function updateDatabase( $dom , $path )
+{
+	checkXMLDirs( $dom );
+	checkXMLFiles( $dom );
+	checkDirs( $dom , $path );
+}
 
 if ( !file_exists( $xml_file_path ) )
 {
@@ -282,35 +437,11 @@ if ( !file_exists( $xml_file_path ) )
 	$dom->save( $xml_file_path );
 }
 
-print_r($argv);
-
-if ($argc == 4)
+if ($argc == 1)
 {
 	$dom = new DOMDocument();
 	$dom->load( $xml_file_path );
-
-	if ($argv[1] == "FILE")
-	{
-		if ($argv[2] == "ADD")
-		{
-			addFile( $dom , $argv[3] );
-		}
-		if ($argv[2] == "DELETE")
-		{
-			removeFile( $dom , $argv[3] );
-		}
-	}
-	if ($argv[1] == "DIR")
-	{
-		if ($argv[2] == "ADD")
-		{
-			addDir( $dom , $argv[3] );
-		}
-		if ($argv[2] == "DELETE")
-		{
-			deleteDirNode( $dom , $argv[3] );
-		}
-	}
+	updateDatabase( $dom , new DirectoryIterator($path) );
 	$dom->save( $xml_file_path );
 }
 
