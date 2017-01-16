@@ -16,6 +16,8 @@ create an html/css/jquery interface to display the whole directory structure
 
 Ability to add custom tag to any album/track
 
+full nextcloud integration
+
 ###Bugs:
 
 somes files show invalid bitrate
