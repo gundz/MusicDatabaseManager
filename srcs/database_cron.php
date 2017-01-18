@@ -13,15 +13,17 @@ function updateDatabase( $dom , $path )
 	checkDirs( $dom , $path );
 }
 
-if ( !file_exists( $xml_file_path ) )
+if (is_dir( $path ) )
 {
-	$dom = generateFullXMLFromDir( $path );
+	if ( !file_exists( $xml_file_path ) )
+	{
+		$dom = generateFullXMLFromDir( $path );
+		$dom->save( $xml_file_path );
+	}
+
+	$dom = new DOMDocument();
+	$dom->load( $xml_file_path );
+	updateDatabase( $dom , new DirectoryIterator($path) );
 	$dom->save( $xml_file_path );
 }
-
-$dom = new DOMDocument();
-$dom->load( $xml_file_path );
-updateDatabase( $dom , new DirectoryIterator($path) );
-$dom->save( $xml_file_path );
-
 ?>
