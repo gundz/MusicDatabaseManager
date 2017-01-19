@@ -75,7 +75,7 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 	if ($dirRoot == null)
 	{
 		$dirRoot = $dirIt->getPathName();
-		echo $dirRoot . PHP_EOL;
+		//echo $dirRoot . PHP_EOL;
 	}
 	foreach ( $dirIt as $dir )
 	{
@@ -83,25 +83,25 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 		{
 			if (dirNodeExists( $dom , $dir->getPathName()) )
 			{
-				echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
+				//echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
 			else
 			{
-				echo "DIR: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
+				//echo "DIR: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
 				addDir( $dom , $dir->getPathName() , $dirRoot );
 			}
-			checkDirs( $dom , new DirectoryIterator( $dir->getPathName() ) , $dirRoot);
+			checkDirs( $dom , new DirectoryIterator( $dir->getPathName() ) , $dirRoot );
 		}
 		else if ( $dir->isFile() )
 		{
-			if (fileNodeExists( $dom , $dir->getPathName()) )
+			if (fileNodeExists( $dom , $dir->getPathName() ) )
 			{
-				echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
+				//echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
 			else
 			{
-				echo "FILE: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
-				addFile($dom, $dir->getPathname());
+				//echo "FILE: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
+				addFile( $dom, $dir->getPathname() );
 			}
 		}
 	}
