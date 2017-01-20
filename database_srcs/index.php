@@ -1,7 +1,3 @@
-<?php
-echo getenv("BITE");
-?>
-
 <!doctype html>
 
 <html lang="en">
