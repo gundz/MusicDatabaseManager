@@ -1,5 +1,5 @@
 web:
-  image: some-content-nginx
+  image: nginx
   ports:
     - "8080:80"
   volumes:
@@ -9,6 +9,6 @@ web:
     - php
 
 php:
-  image: php:7-fpm
+  image: some-content-nginx
   volumes:
     - ./html:/code
