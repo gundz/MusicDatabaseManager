@@ -2,6 +2,6 @@
 
 include('database_cron.php');
 
-header('Location: index.html');
+header('Location: index.php');
 
 ?>

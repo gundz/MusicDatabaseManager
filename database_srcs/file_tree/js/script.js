@@ -91,7 +91,7 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 
 $.ajax({
 	'type': "GET",
-	'url': "../database.xml",
+	'url': "database.xml",
 	'dataType': "xml",
     success: function (xml)
     {
