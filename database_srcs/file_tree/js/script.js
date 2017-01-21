@@ -59,7 +59,12 @@ function getFileDetails(file)
 function showTree($dir, $id = null, $id_text = null, $root = null)
 {
 	if ($id == null)
+	{
 		$id = 0;
+		checked = 'checked="checked"';
+	}
+	else
+		checked = '';
 
 	if ($id_text == null)
 		$id_text = "item-0";
@@ -69,7 +74,7 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 	if ($root == null)
 		$root = $(".css-treeview").children();
 
-	$root = $root.append('<li><input type="checkbox" id="' + $id_text + '"/><label for="' + $id_text + '">' +basename($dir._path)+ '</label><ul>');
+	$root = $root.append('<li><input type="checkbox" ' +checked+ ' id="' + $id_text + '"/><label for="' + $id_text + '">' +basename($dir._path)+ '</label><ul>');
 	
 	$root = $root.find("ul").last();
 
