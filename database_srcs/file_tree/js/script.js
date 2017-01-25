@@ -1,8 +1,8 @@
 function basename(str)
 {
    var base = new String(str).substring(str.lastIndexOf('/') + 1);
-    if(base.lastIndexOf(".") != -1)
-        base = base.substring(0, base.lastIndexOf("."));
+	if(base.lastIndexOf(".") != -1)
+		base = base.substring(0, base.lastIndexOf("."));
    return base;
 }
 
@@ -24,6 +24,7 @@ function setFile(node)
 		_format: $(node).attr('format'),
 		_bitrate: $(node).attr('bitrate'),
 		_bitrate_mode: $(node).attr('bitrate_mode'),
+		_comment: $(node).attr('comment'),
 	}
 	return (file);
 }
@@ -87,23 +88,67 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 		else if (this._type == "file")
 		{
 			var fileDetails = getFileDetails(this);
-			$root.append('<li><a href="' +this._path+ '">' +basename(this._path)+ ' ' + fileDetails + '  ' + '</a></li>');
+			var pathName = basename(this._path);
+			var path = this._path;
+
+			if (typeof this._comment === 'undefined')
+				comment = "";
+			else
+				comment = this._comment;
+
+			var text = '<li><a href="' +path+ '">' +pathName+ ' </a>' + fileDetails;
+			text += '<a href="' +path+ '" id="editable">' +comment+ '</a>';
+			text += '</li>';
+
+			$root.append(text);
 		}
 	});
 
 	$root.append('</ul></li>');
 }
 
-$.ajax({
-	'type': "GET",
-	'url': "database.xml",
-	'dataType': "xml",
-    success: function (xml)
-    {
-		var $xml = $(xml);
-		var $root = $xml.find("root");
+function setEditable()
+{
+	$.fn.editable.defaults.mode = 'popup';
 
-		$ret = scanDir($root.children());
-		showTree($ret);
-    }
+	$('a#editable').editable({
+		type: "text",
+		placement: "right",
+		emptytext: "+",
+		title: "titre",
+		value: "",
+		pk: function($this) { return $(this).attr('href'); }
+		,url: '/post.php'
+		,error: function(response, newValue) {
+			if ( response.status === 404 )
+			{
+				return 'Truc de ouf ?';
+			}
+			else
+			{
+				return response.responseText;
+			}
+		}
+		
+	});
+}
+
+$(document).ready(function()
+{
+	$.ajax({
+		'type': "GET",
+		'url': "database.xml",
+		'dataType': "xml",
+		success: function (xml)
+		{
+			var $xml = $(xml);
+			var $root = $xml.find("root");
+
+			$ret = scanDir($root.children());
+			showTree($ret);
+
+			setEditable();
+		}
+	});
 });
+
