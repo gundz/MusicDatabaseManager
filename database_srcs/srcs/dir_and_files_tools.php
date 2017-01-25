@@ -1,36 +1,5 @@
 <?php
 
-function scanDirectory2 ( $dom , DirectoryIterator $dirIt, $dirNode = null)
-{
-	if ($dirNode == null)
-	{
-		$dirNode = createDirNode( $dom , $dirIt->getPath() );
-	}
-	foreach ( $dirIt as $dir )
-	{
-		if ( $dir->isDir() && !$dir->isDot() )
-		{
-			if (dirNodeExists( $dom , $dir->getPathName() ) == false)
-			{
-				$subDir = scanDirectory( $dom , new DirectoryIterator( $dir->getPathName() ) );
-				$dirNode->appendChild( $subDir );
-			}
-		}
-		else if ( $dir->isFile() )
-		{
-			if (fileNodeExists( $dom , $dir->getPathName()) == false)
-			{
-				$fileNode = createFileNode( $dom , $dir->getPathName() );
-				if ($fileNode === null)
-					continue ;
-				$dirNode->appendChild( $fileNode );			
-			}
-
-		}
-	}
-	return ( $dirNode );
-}
-
 function scanDirectory ( $dom , $path, $dirNode = null)
 {
 	$files = array_slice( scandir( $path) , 2);
