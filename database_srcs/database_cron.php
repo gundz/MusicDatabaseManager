@@ -10,7 +10,7 @@ function updateDatabase( $dom , $dir_path )
 {
 	checkXMLDirs( $dom );
 	checkXMLFiles( $dom );
-	checkDirs( $dom , $dir_path );
+	checkDirs( $dom , new DirectoryIterator ($dir_path) );
 }
 
 if ( !file_exists( $xml_file_path ) )
@@ -29,7 +29,7 @@ if ( is_dir( $dir_path ) )
 	}
 	$dom = new DOMDocument();
 	$dom->load( $xml_file_path );
-	updateDatabase( $dom , new DirectoryIterator( $dir_path ) );
+	updateDatabase( $dom , $dir_path );
 	$dom->save( $xml_file_path );
 }
 

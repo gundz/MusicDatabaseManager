@@ -1,6 +1,6 @@
 <?php
 
-function scanDirectory ( $dom , DirectoryIterator $dirIt, $dirNode = null)
+function scanDirectory2 ( $dom , DirectoryIterator $dirIt, $dirNode = null)
 {
 	if ($dirNode == null)
 	{
@@ -31,6 +31,42 @@ function scanDirectory ( $dom , DirectoryIterator $dirIt, $dirNode = null)
 	return ( $dirNode );
 }
 
+function scanDirectory ( $dom , $path, $dirNode = null)
+{
+	$files = array_slice( scandir( $path) , 2);
+	natcasesort( $files );
+
+	if ($dirNode == null)
+	{
+		$dirNode = createDirNode( $dom , $path );
+	}
+	foreach ( $files as $file )
+	{
+		$pathName = $path . DIRECTORY_SEPARATOR . $file;
+
+		if ( is_dir( $pathName ) && ( $file != "." && $file != ".." ) )
+		{
+			if (dirNodeExists( $dom , $pathName ) == false)
+			{
+				$subDir = scanDirectory( $dom , $pathName );
+				$dirNode->appendChild( $subDir );
+			}
+		}
+		else if ( is_file( $pathName ) )
+		{
+			if (fileNodeExists( $dom , $pathName ) == false)
+			{
+				$fileNode = createFileNode( $dom , $pathName );
+				if ($fileNode === null)
+					continue ;
+				$dirNode->appendChild( $fileNode );			
+			}
+
+		}
+	}
+	return ( $dirNode );
+}
+
 function addDir( $dom , $dir_path , $root_path )
 {
 	$dirs = $dom->getElementsByTagName( "dir" );
@@ -41,7 +77,7 @@ function addDir( $dom , $dir_path , $root_path )
 		{
 			if ( $dir->getAttribute( "path" ) == $dir_path )
 			{
-				scanDirectory( $dom , new DirectoryIterator( $dir->getAttribute( "path" ) ) , $dir );
+				scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
 				return ;
 			}
 		}

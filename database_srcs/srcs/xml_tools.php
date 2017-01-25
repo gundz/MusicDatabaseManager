@@ -6,7 +6,7 @@ function generateFullXMLFromDir( $path )
 	$root = $dom->createElement( 'root' );
 	$dom->appendChild( $root );
 
-	$dirs = scanDirectory( $dom , new DirectoryIterator( $path ) );
+	$dirs = scanDirectory( $dom , $path );
 	$root->appendChild( $dirs );
 
 	return ( $dom );
