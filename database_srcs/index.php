@@ -14,8 +14,8 @@
 	<link href="http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/css/jquery-editable.css" rel="stylesheet"/>
  	<script src="http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
 
-    <link href="file_tree/select2/css/select2.min.css" rel="stylesheet" />
-    <script src="file_tree/select2/js/select2.min.js"></script>
+    <link href="file_tree/select2/select2.css" rel="stylesheet" />
+    <script src="file_tree/select2/select2.js"></script>
 
 	<script src="file_tree/js/script.js"></script>
 	<link rel="stylesheet" href="file_tree/css/main.css?v=1.0">

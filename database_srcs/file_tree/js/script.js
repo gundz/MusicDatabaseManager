@@ -25,6 +25,7 @@ function setFile(node)
 		_bitrate: $(node).attr('bitrate'),
 		_bitrate_mode: $(node).attr('bitrate_mode'),
 		_comment: $(node).attr('comment'),
+		_country: $(node).attr('country'),
 	}
 	return (file);
 }
@@ -96,9 +97,15 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 			else
 				comment = this._comment;
 
+			if (typeof this._country === 'undefined')
+				country = "Select country";
+			else
+				country = this._country;
+
+
 			var text = '<li><a href="' +path+ '">' +pathName+ ' </a>' + fileDetails;
 			text += '<a href="' +path+ '" id="comment">' +comment+ '</a>';
-			text += '<a href="' +path+ '" id="country" data-type="select" data-title="Select country"></a>';
+			text += '<a href="' +path+ '" id="country" data-type="select2" data-title="Select country">' +country+ '</a>'
 			text += '</li>';
 
 			$root.append(text);
@@ -141,10 +148,11 @@ function setCountry()
 	    countries.push({id: k, text: v});
 	}); 
 	$('a#country').editable({
+		value: "Select country",
 		url: "/post.php",
 	    source: countries,
 	    pk: function($this) { return $(this).attr('href'); },
-	    select: {
+	    select2: {
 	        width: 200,
 	        placeholder: 'Select country',
 	        allowClear: true
