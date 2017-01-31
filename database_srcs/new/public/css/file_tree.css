@@ -40,26 +40,35 @@ input:checked ~ ul
 
 div.infos
 {
-	/*visibility: hidden;*/
-
+	margin-left: 2px;
 	background-color: white;
 
 	border: 1px solid black;
 	border-radius: 3px;
-	padding: 5px;
+	padding: 3px;
 }
 
-div.infos , .bitrate , .commentaire , .country
+div.infos , div.infos *
 {
 	display: inline-block;
 }
 
-.bitrate
+.bitrate_info, .comment_info , .country, .country_info
+{
+	margin-left: 10px;
+}
+
+div.infos *:first-child
+{
+	margin-left: 0px;
+}
+
+.bitrate_info
 {
 	font-size: 10px;
 }
 
-.commentaire
+.comment_info
 {
 	font-style: italic;
 }

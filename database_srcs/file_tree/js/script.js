@@ -77,7 +77,7 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 		$root = $(".css-treeview").children();
 
 	$root = $root.append('<li><input type="checkbox" ' +checked+ ' id="' + $id_text + '"/><label for="' + $id_text + '">' +basename($dir._path)+ '</label><ul>');
-	
+
 	$root = $root.find("ul").last();
 
 	$($dir._content).each(function(index)
