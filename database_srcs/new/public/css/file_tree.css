@@ -1,0 +1,72 @@
+/* https://makina-corpus.com/blog/metier/2014/construire-un-tree-view-en-css-pur */
+
+/* fonctionnel */
+
+li input
+{
+	display: none;
+}
+
+input ~ ul
+{
+	display: none;
+}
+
+input:checked ~ ul
+{
+	display: block;
+}
+
+
+/* habillage */
+
+li
+{
+	display: block;
+	font-family: 'Arial';
+	font-size: 15px;
+	padding: 0.2em;
+	border: 1px solid transparent;
+	margin: 2px;
+}
+
+input:checked ~ ul
+{
+
+	background-color: lightgrey;
+}
+
+/* INFOS BOX */
+
+div.infos
+{
+	/*visibility: hidden;*/
+
+	background-color: white;
+
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 5px;
+}
+
+div.infos , .bitrate , .commentaire , .country
+{
+	display: inline-block;
+}
+
+.bitrate
+{
+	font-size: 10px;
+}
+
+.commentaire
+{
+	font-style: italic;
+}
+
+/* COUNTRY BOX */
+
+.flag-text
+{
+	margin-left: 10px;
+}
