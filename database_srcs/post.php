@@ -5,33 +5,38 @@ include_once("config/config.php");
 $dom = new DOMDocument();
 $dom->load( $xml_file_path );
 
-$dirs = $dom->getElementsByTagName( "file" );
-
-foreach ( $dirs as $dir )
+function find_in_database($dom , $path)
 {
-	if ( $dir->hasAttribute( "path" ) )
+	$path = addslashes( $path );
+
+	$xpath = new DOMXPath( $dom );
+
+	$dir_query = "//dir[@path='" . $path. "']";
+	$entries = $xpath->query($dir_query);
+
+	if ($entries->item(0) == null)
 	{
-		if ($_POST["name"] == "comment")
-		{
-			if ( $_POST["pk"] == $dir->getAttribute( "path" ) )
-			{
-				$dir->setAttribute( 'comment' , $_POST["value"] );
-				$dom->save( $xml_file_path );
-				exit(http_response_code(200));
-			}
-		}
-		if ($_POST["name"] == "country")
-		{
-			if ( $_POST["pk"] == $dir->getAttribute( "path" ) )
-			{
-				$dir->setAttribute( 'country' , $_POST["value"] );
-				$dom->save( $xml_file_path );
-				exit(http_response_code(200));
-			}
-		}
+		$file_query = "//file[@path='" . $path. "']";
+		$entries = $xpath->query( $file_query );
 	}
+
+	return ( $entries->item(0) );
 }
 
-exit(http_response_code(500));
+$node = find_in_database($dom, $_POST["pk"]);
+
+if ($_POST["name"] == "comment")
+{
+	$node = find_in_database($dom , $_POST["pk"]);
+	$node->setAttribute( 'comment' , $_POST["value"] );
+	$dom->save( $xml_file_path );
+}
+
+if ($_POST["name"] == "country")
+{
+	$node = find_in_database($dom , $_POST["pk"]);
+	$node->setAttribute( 'country' , $_POST["value"] );
+	$dom->save( $xml_file_path );
+}
 
 ?>

@@ -159,7 +159,7 @@ function setCountry()
 		emptytext: '<img src="public/img/blankflag.png" />',
 		source: isoCountries,
 		pk: function($this) {return $(this).attr('href'); },
-		url: "test.php",
+		url: "/post.php",
 		select2:
 		{
 			width: 200,
@@ -189,7 +189,7 @@ function setComments()
 		title: "Please enter comment",
 		value: "",
 		pk: function($this) { return $(this).attr('href'); }
-		,url: 'test.php'
+		,url: '/post.php'
 	});
 }
 
