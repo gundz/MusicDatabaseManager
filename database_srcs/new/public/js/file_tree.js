@@ -68,6 +68,8 @@ function getBitrateText(file)
 
 function getInfos(node)
 {
+	var path = node._path;
+
 	var bitrate = getBitrateText(node);
 	bitrate_text = "";
 	if (typeof bitrate !== 'undefined')
@@ -95,11 +97,11 @@ function getInfos(node)
 	//Country
 	if (node._type == "dir")
 	{
-		retText += '<div class="country_info"><a ' +country+ ' id="country" data-type="select2">' +country_flag+ '</a></div>';
+		retText += '<div class="country_info"><a href="' +path+ '" ' +country+ ' id="country" data-type="select2">' +country_flag+ '</a></div>';
 	}
 
 	//Comment
-	retText += '<div class="comment_info"><a href="" id="comment">' +comment+'</a></div>';
+	retText += '<div class="comment_info"><a href="' +path+ '" id="comment">' +comment+'</a></div>';
 
 	retText += '</div>';
 	return (retText);
@@ -147,7 +149,6 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 function setCountry()
 {
 	$('a#country').editable({
-		url: "test.php",
 		display: function (value)
 		{
 			if (value)
@@ -158,6 +159,7 @@ function setCountry()
 		emptytext: '<img src="public/img/blankflag.png" />',
 		source: isoCountries,
 		pk: function($this) {return $(this).attr('href'); },
+		url: "test.php",
 		select2:
 		{
 			width: 200,
@@ -188,16 +190,6 @@ function setComments()
 		value: "",
 		pk: function($this) { return $(this).attr('href'); }
 		,url: 'test.php'
-		,error: function(response, newValue) {
-			if ( response.status === 404 )
-			{
-				return 'Truc de ouf ?';
-			}
-			else
-			{
-				return response.responseText;
-			}
-		}
 	});
 }
 
