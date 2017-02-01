@@ -185,7 +185,7 @@ function setComments()
 	$('a#comment').editable({
 		type: "text",
 		placement: "right",
-		emptytext: "+",
+		emptytext: '<img src="public/img/comment_icon.png" />',
 		title: "Please enter comment",
 		value: "",
 		pk: function($this) { return $(this).attr('href'); }
