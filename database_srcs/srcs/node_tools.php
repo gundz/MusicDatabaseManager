@@ -29,19 +29,6 @@ function fileNodeExists( $dom , $file_path )
 	if (find_node($dom, $file_path) == null)
 		return (false);
 	return (true);
-	// $files = $dom->getElementsByTagName( "file" );
-
-	// foreach ( $files as $file )
-	// {
-	// 	if ( $file->hasAttribute( "path" ) )
-	// 	{
-	// 		if ( $file->getAttribute( "path" ) == $file_path )
-	// 		{
-	// 			return ( true );
-	// 		}
-	// 	}
-	// }
-	// return ( false );
 }
 
 function dirNodeExists( $dom , $file_path )
@@ -49,19 +36,6 @@ function dirNodeExists( $dom , $file_path )
 	if (find_node($dom, $file_path) == null)
 		return (false);
 	return (true);
-	// $dirs = $dom->getElementsByTagName( "dir" );
-
-	// foreach ( $dirs as $dir )
-	// {
-	// 	if ( $dir->hasAttribute( "path" ) )
-	// 	{
-	// 		if ( $dir->getAttribute( "path" ) == $file_path )
-	// 		{
-	// 			return ( true );
-	// 		}
-	// 	}
-	// }
-	// return ( false );
 }
 
 ?>
