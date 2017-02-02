@@ -6,16 +6,18 @@ function find_node($dom , $path)
 
 	$xpath = new DOMXPath( $dom );
 
-	$dir_query = "//dir[@path='" . $path. "']";
-	$entries = $xpath->query($dir_query);
+	$query = "//dir[@path='" . $path. "']";
+	$entries = $xpath->query($query);
+
 	if ($entries == false)
 		return (null);
 
 	if ($entries->item(0) == null)
 	{
 		$file_query = "//file[@path='" . $path. "']";
-		$entries = $xpath->query( $file_query );
+		$entries = $xpath->query( $query );
 	}
+	echo $query . PHP_EOL;
 
 	return ( $entries->item(0) );
 }
