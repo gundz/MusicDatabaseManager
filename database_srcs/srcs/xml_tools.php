@@ -7,6 +7,7 @@ function find_node($dom , $path)
 	$xpath = new DOMXPath( $dom );
 
 	$query = "//dir[@path='" . $path . "']";
+
 	$entries = $xpath->query($query);
 
 	if ($entries == false)
@@ -17,6 +18,7 @@ function find_node($dom , $path)
 		$file_query = "//file[@path='" . $path. "']";
 		$entries = $xpath->query( $query );
 	}
+	echo $path . PHP_EOL;
 	echo $query . PHP_EOL;
 
 	return ( $entries->item(0) );
