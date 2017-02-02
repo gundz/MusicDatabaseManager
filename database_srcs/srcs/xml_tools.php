@@ -2,6 +2,9 @@
 
 function find_node($dom , $path)
 {
+	if (!isset($path) || $path == "")
+		return (null);
+
 	$path = realpath(addslashes( $path ));
 
 	$xpath = new DOMXPath( $dom );
