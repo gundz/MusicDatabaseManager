@@ -125,7 +125,7 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 	if ($root == null)
 		$root = $(".css-treeview").children();
 
-	$root = $root.append('<li><input type="checkbox" ' +checked+ ' id="' + $id_text + '"/><label for="' + $id_text + '">' +basename($dir._path)+ '</label>' +getInfos($dir)+ '<ul>');
+	$root = $root.append('<li><img src="public/img/icon_folder.png" /><input type="checkbox" ' +checked+ ' id="' + $id_text + '"/><label for="' + $id_text + '">' +basename($dir._path)+ '</label>' +getInfos($dir)+ '<ul>');
 
 	$root = $root.find("ul").last();
 
@@ -137,7 +137,7 @@ function showTree($dir, $id = null, $id_text = null, $root = null)
 		}
 		else if (this._type == "file")
 		{
-			var text = '<li>' +basename(this._path)+ getInfos(this)+ '</li>';
+			var text = '<li><img src="public/img/icon_music.png" />' +basename(this._path)+ getInfos(this)+ '</li>';
 
 			$root.append(text);
 		}

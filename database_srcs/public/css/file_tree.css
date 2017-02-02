@@ -17,7 +17,6 @@ input:checked ~ ul
 	display: block;
 }
 
-
 /* habillage */
 
 li
@@ -28,6 +27,11 @@ li
 	padding: 0.2em;
 	border: 1px solid transparent;
 	margin: 2px;
+}
+
+li img
+{
+	margin-right: 5px;
 }
 
 input:checked ~ ul
