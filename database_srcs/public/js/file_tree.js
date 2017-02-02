@@ -193,7 +193,7 @@ function setComments()
 	});
 }
 
-$(document).ready(function()
+function loadAll()
 {
 	$.ajax({
 		'type': "GET",
@@ -210,8 +210,9 @@ $(document).ready(function()
 			setComments();
 			setCountry();
 
-			$(".loading").fadeOut("slow");
 		}
 	});
-});
+	$(".loading").fadeOut("slow");
+}
 
+$(document).ready(loadAll);
