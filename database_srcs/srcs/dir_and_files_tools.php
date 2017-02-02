@@ -28,7 +28,7 @@ function scanDirectory ( $dom , $path, $dirNode = null)
 				$fileNode = createFileNode( $dom , $pathName );
 				if ($fileNode === null)
 					continue ;
-				$dirNode->appendChild( $fileNode );			
+				$dirNode->appendChild( $fileNode );
 			}
 
 		}
@@ -38,41 +38,55 @@ function scanDirectory ( $dom , $path, $dirNode = null)
 
 function addDir( $dom , $dir_path , $root_path )
 {
-	$dirs = $dom->getElementsByTagName( "dir" );
-
-	foreach ( $dirs as $dir )
-	{
-		if ( $dir->hasAttribute( "path" ) )
-		{
-			if ( $dir->getAttribute( "path" ) == $dir_path )
-			{
-				scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
-				return ;
-			}
-		}
-	}
+	$node = find_node($dom, $dir_path);
+	if ($node == null)
+		return ;
+	scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
 	if (dirname($dir_path) != $root_path)
 		addDir($dom, dirname($dir_path), $root_path);
+
+	// $dirs = $dom->getElementsByTagName( "dir" );
+
+	// foreach ( $dirs as $dir )
+	// {
+	// 	if ( $dir->hasAttribute( "path" ) )
+	// 	{
+	// 		if ( $dir->getAttribute( "path" ) == $dir_path )
+	// 		{
+	// 			scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
+	// 			return ;
+	// 		}
+	// 	}
+	// }
+	// if (dirname($dir_path) != $root_path)
+	// 	addDir($dom, dirname($dir_path), $root_path);
 }
 
 function addFile( $dom , $file_path )
 {
-	$dirs = $dom->getElementsByTagName( "dir" );
+	$node = find_node($dom, dirname($file_path));
+	if ($node == null)
+		return ;
+	$fileNode = createFileNode( $dom , $file_path );
+	if ($fileNode === null)
+		return ;
+	$node->appendChild( $fileNode );
 
-	foreach ( $dirs as $dir )
-	{
-		if ( $dir->hasAttribute( "path" ) )
-		{
-			if ( $dir->getAttribute( "path" ) == dirname($file_path) )
-			{
-				$fileNode = createFileNode( $dom , $file_path );
-				if ($fileNode === null)
-					continue ;
-				$dir->appendChild( $fileNode );
-				return ;
-			}
-		}
-	}
+	// $dirs = $dom->getElementsByTagName( "dir" );
+	// foreach ( $dirs as $dir )
+	// {
+	// 	if ( $dir->hasAttribute( "path" ) )
+	// 	{
+	// 		if ( $dir->getAttribute( "path" ) == dirname($file_path) )
+	// 		{
+	// 			$fileNode = createFileNode( $dom , $file_path );
+	// 			if ($fileNode === null)
+	// 				continue ;
+	// 			$dir->appendChild( $fileNode );
+	// 			return ;
+	// 		}
+	// 	}
+	// }
 }
 
 function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
@@ -86,7 +100,8 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 	{
 		if ( $dir->isDir() && !$dir->isDot() )
 		{
-			if (dirNodeExists( $dom , $dir->getPathName()) )
+			// if (dirNodeExists( $dom , $dir->getPathName()) )
+			if (find_node($dom, $dir->getPathname()) != null)
 			{
 				//echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
@@ -99,7 +114,8 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 		}
 		else if ( $dir->isFile() )
 		{
-			if (fileNodeExists( $dom , $dir->getPathName() ) )
+			// if (fileNodeExists( $dom , $dir->getPathName() ) )
+			if (find_node($dom, $dir->getPathname()) != null)
 			{
 				//echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}

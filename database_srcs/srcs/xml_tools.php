@@ -1,5 +1,23 @@
 <?php
 
+function find_node($dom , $path)
+{
+	$path = addslashes( $path );
+
+	$xpath = new DOMXPath( $dom );
+
+	$dir_query = "//dir[@path='" . $path. "']";
+	$entries = $xpath->query($dir_query);
+
+	if ($entries->item(0) == null)
+	{
+		$file_query = "//file[@path='" . $path. "']";
+		$entries = $xpath->query( $file_query );
+	}
+
+	return ( $entries->item(0) );
+}
+
 function generateFullXMLFromDir( $path )
 {
 	$dom = new DOMDocument( '1.0', 'utf-8' );

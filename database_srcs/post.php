@@ -5,7 +5,7 @@ include_once("config/config.php");
 $dom = new DOMDocument();
 $dom->load( $xml_file_path );
 
-function find_in_database($dom , $path)
+function find_node($dom , $path)
 {
 	$path = addslashes( $path );
 
@@ -23,18 +23,18 @@ function find_in_database($dom , $path)
 	return ( $entries->item(0) );
 }
 
-$node = find_in_database($dom, $_POST["pk"]);
+$node = find_node($dom, $_POST["pk"]);
 
 if ($_POST["name"] == "comment")
 {
-	$node = find_in_database($dom , $_POST["pk"]);
+	$node = find_node($dom , $_POST["pk"]);
 	$node->setAttribute( 'comment' , $_POST["value"] );
 	$dom->save( $xml_file_path );
 }
 
 if ($_POST["name"] == "country")
 {
-	$node = find_in_database($dom , $_POST["pk"]);
+	$node = find_node($dom , $_POST["pk"]);
 	$node->setAttribute( 'country' , $_POST["value"] );
 	$dom->save( $xml_file_path );
 }

@@ -26,36 +26,42 @@ function createDirNode( $dom , $path )
 
 function fileNodeExists( $dom , $file_path )
 {
-	$files = $dom->getElementsByTagName( "file" );
+	if (find_node($dom, $file_path) == null)
+		return (false);
+	return (true);
+	// $files = $dom->getElementsByTagName( "file" );
 
-	foreach ( $files as $file )
-	{
-		if ( $file->hasAttribute( "path" ) )
-		{
-			if ( $file->getAttribute( "path" ) == $file_path )
-			{
-				return ( true );
-			}
-		}
-	}
-	return ( false );
+	// foreach ( $files as $file )
+	// {
+	// 	if ( $file->hasAttribute( "path" ) )
+	// 	{
+	// 		if ( $file->getAttribute( "path" ) == $file_path )
+	// 		{
+	// 			return ( true );
+	// 		}
+	// 	}
+	// }
+	// return ( false );
 }
 
 function dirNodeExists( $dom , $file_path )
 {
-	$dirs = $dom->getElementsByTagName( "dir" );
+	if (find_node($dom, $file_path) == null)
+		return (false);
+	return (true);
+	// $dirs = $dom->getElementsByTagName( "dir" );
 
-	foreach ( $dirs as $dir )
-	{
-		if ( $dir->hasAttribute( "path" ) )
-		{
-			if ( $dir->getAttribute( "path" ) == $file_path )
-			{
-				return ( true );
-			}
-		}
-	}
-	return ( false );
+	// foreach ( $dirs as $dir )
+	// {
+	// 	if ( $dir->hasAttribute( "path" ) )
+	// 	{
+	// 		if ( $dir->getAttribute( "path" ) == $file_path )
+	// 		{
+	// 			return ( true );
+	// 		}
+	// 	}
+	// }
+	// return ( false );
 }
 
 ?>

@@ -198,6 +198,7 @@ function loadAll()
 	$.ajax({
 		'type': "GET",
 		'url': "database.xml",
+		cache: false,
 		'dataType': "xml",
 		success: function (xml)
 		{

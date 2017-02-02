@@ -25,7 +25,7 @@ if ( is_dir( $dir_path ) )
 	{
 		$dom = new DOMDocument();
 		$dom = generateFullXMLFromDir( $dir_path );
-		$dom->save( $xml_file_path );		
+		$dom->save( $xml_file_path );
 	}
 	$dom = new DOMDocument();
 	$dom->load( $xml_file_path );
