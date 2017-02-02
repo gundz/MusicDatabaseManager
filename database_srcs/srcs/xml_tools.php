@@ -2,11 +2,11 @@
 
 function find_node($dom , $path)
 {
-	$path = addslashes( $path );
+	$path = realpath(addslashes( $path ));
 
 	$xpath = new DOMXPath( $dom );
 
-	$query = "//dir[@path='" . $path. "']";
+	$query = "//dir[@path='" . $path . "']";
 	$entries = $xpath->query($query);
 
 	if ($entries == false)
