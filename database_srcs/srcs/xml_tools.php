@@ -8,6 +8,8 @@ function find_node($dom , $path)
 
 	$dir_query = "//dir[@path='" . $path. "']";
 	$entries = $xpath->query($dir_query);
+	if ($entries == false)
+		return (null);
 
 	if ($entries->item(0) == null)
 	{
