@@ -193,7 +193,8 @@ function setComments()
 	});
 }
 
-$(document).ready(function() {
+$(document).ready(function()
+{
 	$.ajax({
 		'type': "GET",
 		'url': "database.xml",
@@ -208,6 +209,8 @@ $(document).ready(function() {
 
 			setComments();
 			setCountry();
+
+			$(".loading").fadeOut("slow");
 		}
 	});
 });
