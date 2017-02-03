@@ -47,11 +47,11 @@ function checkXMLDirs( $dom )
 		{
 			if (file_exists( $dir->getAttribute( "path" ) ) )
 			{
-				// echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
+				echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
 			}
 			else
 			{
-				// echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
+				echo "DIR: \"" . $dir->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
 				$ToDelete[] = $dir;
 			}
 		}
@@ -73,11 +73,11 @@ function checkXMLFiles( $dom )
 		{
 			if (file_exists( $files->getAttribute( "path" ) ) )
 			{
-				// echo "FILE: \"" . $files->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
+				echo "FILE: \"" . $files->getAttribute( "path" ) . "\" EXISTS" . PHP_EOL;
 			}
 			else
 			{
-				// echo "FILE: \"" . $files->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
+				echo "FILE: \"" . $files->getAttribute( "path" ) . "\" NOT EXISTS" . PHP_EOL;
 				$ToDelete[] = $files;
 			}
 		}
