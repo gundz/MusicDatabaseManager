@@ -2,8 +2,8 @@
 
 function find_node($dom , $path)
 {
-	if (!isset($path) || $path == "")
-		return (null);
+	if ( !isset( $path ) || $path == "")
+		return ( null );
 
 	$path = realpath(addslashes( $path ));
 
@@ -11,17 +11,17 @@ function find_node($dom , $path)
 
 	$query = "//dir[@path='" . $path . "']";
 
-	$entries = $xpath->query($query);
+	$entries = $xpath->query( $query );
 
 	if ($entries == false)
-		return (null);
+		return ( null );
 
-	if ($entries->item(0) == null)
+	if ( $entries->item( 0 ) == null)
 	{
-		$file_query = "//file[@path='" . $path. "']";
+		$query = "//file[@path='" . $path. "']";
 		$entries = $xpath->query( $query );
 	}
-	return ( $entries->item(0) );
+	return ( $entries->item( 0 ) );
 }
 
 function generateFullXMLFromDir( $path )

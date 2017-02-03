@@ -26,16 +26,16 @@ function createDirNode( $dom , $path )
 
 function fileNodeExists( $dom , $file_path )
 {
-	if (find_node($dom, $file_path) == null)
-		return (false);
-	return (true);
+	if ( find_node( $dom, $file_path ) == null )
+		return ( false );
+	return ( true );
 }
 
 function dirNodeExists( $dom , $file_path )
 {
-	if (find_node($dom, $file_path) == null)
-		return (false);
-	return (true);
+	if ( find_node( $dom, $file_path ) == null )
+		return ( false );
+	return ( true );
 }
 
 ?>

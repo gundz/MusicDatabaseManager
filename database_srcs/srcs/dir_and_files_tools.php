@@ -38,18 +38,18 @@ function scanDirectory ( $dom , $path, $dirNode = null)
 
 function addDir( $dom , $dir_path , $root_path )
 {
-	$node = find_node($dom, $dir_path);
-	if ($node == null)
+	$node = find_node( $dom, $dir_path );
+	if ( $node == null )
 		return ;
 	scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
-	if (dirname($dir_path) != $root_path)
-		addDir($dom, dirname($dir_path), $root_path);
+	if ( dirname( $dir_path ) != $root_path )
+		addDir( $dom, dirname( $dir_path ), $root_path );
 }
 
 function addFile( $dom , $file_path )
 {
-	$node = find_node($dom, dirname($file_path));
-	if ($node == null)
+	$node = find_node( $dom, dirname( $file_path ) );
+	if ( $node == null )
 		return ;
 	$fileNode = createFileNode( $dom , $file_path );
 	if ($fileNode === null)
@@ -67,7 +67,7 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 	{
 		if ( $dir->isDir() && !$dir->isDot() )
 		{
-			if (find_node($dom, $dir->getPathname()) != null)
+			if (find_node($dom, $dir->getPathName()) != null)
 			{
 				echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
@@ -80,14 +80,14 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 		}
 		else if ( $dir->isFile() )
 		{
-			if (find_node($dom, $dir->getPathname()) != null)
+			if (find_node($dom, $dir->getPathName()) != null)
 			{
 				echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
 			else
 			{
 				echo "FILE: \"" . $dir->getPathName() . "\" NOT EXISTS IN DB" . PHP_EOL;
-				addFile( $dom, $dir->getPathname() );
+				addFile( $dom, $dir->getPathName() );
 			}
 		}
 	}
