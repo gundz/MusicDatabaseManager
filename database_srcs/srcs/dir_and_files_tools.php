@@ -38,17 +38,20 @@ function scanDirectory ( $dom , $path, $dirNode = null)
 
 function addDir( $dom , $dir_path , $root_path )
 {
-	$node = find_node( $dom, $dir_path );
+	$node = find_node( $dom , dirname( $dir_path ) );
 	if ( $node == null )
-		return ;
-	scanDirectory( $dom , $dir->getAttribute( "path" ) , $dir );
-	if ( dirname( $dir_path ) != $root_path )
-		addDir( $dom, dirname( $dir_path ), $root_path );
+	{
+		if ( dirname ( $dir_path ) != $root_path )
+			addDir( $dom , dirname( $dir_path ) , $root_path );
+		else
+			return ;
+	}
+	scanDirectory( $dom , $node->getAttribute( "path" ) , $node );
 }
 
 function addFile( $dom , $file_path )
 {
-	$node = find_node( $dom, dirname( $file_path ) );
+	$node = find_node( $dom , dirname( $file_path ) );
 	if ( $node == null )
 		return ;
 	$fileNode = createFileNode( $dom , $file_path );
