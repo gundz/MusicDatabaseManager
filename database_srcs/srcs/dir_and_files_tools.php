@@ -1,5 +1,14 @@
 <?php
 
+function check_file_extention( $filename )
+{
+	$allowed =  array('mp3','flac');
+	$ext = strtolower( pathinfo( $filename , PATHINFO_EXTENSION ) );
+	if( !in_array( $ext , $allowed ) )
+		return ( false );
+	return ( true );
+}
+
 function scanDirectory ( $dom , $path, $dirNode = null)
 {
 	$files = array_slice( scandir( $path) , 2);
@@ -23,6 +32,8 @@ function scanDirectory ( $dom , $path, $dirNode = null)
 		}
 		else if ( is_file( $pathName ) )
 		{
+			if ( check_file_extention( $pathName ) == false )
+				continue ;
 			if (fileNodeExists( $dom , $pathName ) == false)
 			{
 				$fileNode = createFileNode( $dom , $pathName );
@@ -83,6 +94,8 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 		}
 		else if ( $dir->isFile() )
 		{
+			if ( check_file_extention( $dir->getPathName() ) == false )
+				continue ;
 			if (find_node($dom, $dir->getPathName()) != null)
 			{
 				echo "FILE: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;

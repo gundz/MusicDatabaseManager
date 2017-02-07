@@ -5,11 +5,11 @@ function find_node($dom , $path)
 	if ( !isset( $path ) || $path == "")
 		return ( null );
 
-	$path = realpath(addslashes( $path ));
+	$path = realpath( $path );
 
 	$xpath = new DOMXPath( $dom );
 
-	$query = "//dir[@path='" . $path . "']";
+	$query = '//dir[@path="' . $path . '"]';
 
 	$entries = $xpath->query( $query );
 
@@ -18,7 +18,7 @@ function find_node($dom , $path)
 
 	if ( $entries->item( 0 ) == null)
 	{
-		$query = "//file[@path='" . $path. "']";
+		$query = '//file[@path="' . $path . '"]';
 		$entries = $xpath->query( $query );
 	}
 	return ( $entries->item( 0 ) );
