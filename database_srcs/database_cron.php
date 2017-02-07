@@ -18,19 +18,21 @@ if ( !file_exists( $xml_file_path ) )
 	$dom = generateFullXMLFromDir( $dir_path );
 	$dom->save( $xml_file_path );
 }
-
-if ( is_dir( $dir_path ) )
+else
 {
-	if (DOMDocument::load( $xml_file_path ) == false)
+	if ( is_dir( $dir_path ) )
 	{
+		if (DOMDocument::load( $xml_file_path ) == false)
+		{
+			$dom = new DOMDocument();
+			$dom = generateFullXMLFromDir( $dir_path );
+			$dom->save( $xml_file_path );
+		}
 		$dom = new DOMDocument();
-		$dom = generateFullXMLFromDir( $dir_path );
+		$dom->load( $xml_file_path );
+		updateDatabase( $dom , $dir_path );
 		$dom->save( $xml_file_path );
 	}
-	$dom = new DOMDocument();
-	$dom->load( $xml_file_path );
-	updateDatabase( $dom , $dir_path );
-	$dom->save( $xml_file_path );
 }
 
 ?>

@@ -81,7 +81,7 @@ function checkDirs( $dom , DirectoryIterator $dirIt , $dirRoot = null )
 	{
 		if ( $dir->isDir() && !$dir->isDot() )
 		{
-			if (find_node($dom, $dir->getPathName()) != null)
+			if ( find_node($dom, $dir->getPathName()) != null )
 			{
 				echo "DIR: \"" . $dir->getPathName() . "\" EXISTS IN DB" . PHP_EOL;
 			}
