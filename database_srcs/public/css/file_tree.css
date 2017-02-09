@@ -2,17 +2,17 @@
 
 /* fonctionnel */
 
-li input
+.css-treeview li input
 {
 	display: none;
 }
 
-input ~ ul
+.css-treeview input ~ ul
 {
 	display: none;
 }
 
-input:checked ~ ul
+.css-treeview input:checked ~ ul
 {
 	display: block;
 }
@@ -107,5 +107,5 @@ div.infos *:first-child
 	width: 100%;
 	height: 100%;
 	z-index: 9999;
-	background: url(/public/img/loading.png) center no-repeat #fff;
+	background: url(/public/img/loading.gif) center no-repeat #fff;
 }
