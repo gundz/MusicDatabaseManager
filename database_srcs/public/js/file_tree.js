@@ -196,8 +196,8 @@ function setComments()
 		title: "Please enter comment",
 		value: "",
 		allowClear: true,
-		pk: function($this) { return $(this).attr('href'); }
-		,url: '/post.php'
+		pk: function($this) { return $(this).attr('href'); },
+		url: '/post.php'
 	});
 }
 
@@ -224,7 +224,7 @@ function setLoadSubDir()
 
 function main()
 {
-	root = $(database.getXml()).find('root');
+	root = $(database.getXml()).find('dirs');
 	listDir(root.children());
 	setInfoBox();
 	setLoadSubDir();
