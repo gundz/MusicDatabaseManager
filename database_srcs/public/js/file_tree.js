@@ -195,6 +195,7 @@ function setComments()
 		emptytext: '<img src="public/img/comment_icon.png" />',
 		title: "Please enter comment",
 		value: "",
+		allowClear: true,
 		pk: function($this) { return $(this).attr('href'); }
 		,url: '/post.php'
 	});
