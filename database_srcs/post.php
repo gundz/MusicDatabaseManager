@@ -23,8 +23,6 @@ function find_node($dom , $path)
 	return ( $entries->item(0) );
 }
 
-$node = find_node($dom, $_POST["pk"]);
-
 if ($_POST["name"] == "comment")
 {
 	$node = find_node($dom , $_POST["pk"]);
@@ -39,4 +37,34 @@ if ($_POST["name"] == "country")
 	$dom->save( $xml_file_path );
 }
 
+if ($_POST["name"] == "tag")
+{
+	$xpath = new DOMXPath( $dom );
+
+	$tags_node = $xpath->query("//tags")->item(0);
+	foreach ($_POST["value"] as $value)
+	{
+		$ret = $xpath->query("//tag[text()='" . $value . "']");
+		if ($ret == false OR $ret->item(0) == null)
+		{
+			$tag = $dom->createElement("tag", $value);
+			$tags_node->appendChild($tag);
+		}
+	}
+
+	$node = find_node($dom, $_POST["pk"]);
+	$tags = json_decode($node->getAttribute('tags'));
+	if ($tags == null)
+		$tags = array();
+	else
+		$tags = array($tags);
+	foreach ($_POST["value"] as $value)
+	{
+		if (in_array($value, $tags) == false && $value != null)
+			$tags[] = $value;
+	}
+	$node->setAttribute("tag", json_encode($tags));
+
+	$dom->save( $xml_file_path );
+}
 ?>

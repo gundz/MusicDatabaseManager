@@ -38,6 +38,7 @@ function setDir(node)
 		_bitrate_mode: $(node).attr('bitrate_mode'),
 		_comment: $(node).attr('comment'),
 		_country: $(node).attr('country'),
+		_tags: $(node).attr('tag'),
 
 		_content: []
 	}
@@ -54,6 +55,7 @@ function setFile(node)
 		_bitrate_mode: $(node).attr('bitrate_mode'),
 		_comment: $(node).attr('comment'),
 		_country: $(node).attr('country'),
+		_tags: $(node).attr('tag'),
 	}
 	return (file);
 }
@@ -68,16 +70,36 @@ function parseBitrate(file)
 	return (ret);
 }
 
+function parseJSONTags(tags)
+{
+	if (tags == null)
+		return (null);
+
+	tags = JSON.parse(tags);
+	ret_tags = "";
+	$(tags).each(function(index, item){
+		ret_tags += item;
+		if (index != tags.length - 1)
+			ret_tags += ", ";
+	});
+	return (ret_tags);
+}
+
 function getInfos(node)
 {
 	var path = node._path;
 
+	var retText = "";
+	retText += '<div class="infos">';
+
+	//Bitrate
 	var bitrate = parseBitrate(node);
 	bitrate_text = "";
 	if (typeof bitrate !== 'undefined')
 		bitrate_text = '<div class="bitrate_info">' +bitrate+ '</div>';
+	retText += bitrate_text;
 
-
+	//Country
 	var country = "";
 	var country_flag = "";
 	if (typeof node._country !== 'undefined')
@@ -85,25 +107,23 @@ function getInfos(node)
 		country = 'data-value="' +node._country+ '"';
 		country_flag = '<span value="' +node._country+ '" class="flag-icon flag-icon-'+ node._country.toLowerCase() +'"></span>';
 	}
-
-	var comment = "";
-	if (typeof node._comment !== 'undefined')
-		var comment = node._comment;
-
-	var retText = "";
-	retText += '<div class="infos">';
-
-	//Bitrate
-	retText += bitrate_text;
-
-	//Country
 	if (node._type == "dir")
 	{
 		retText += '<div class="country_info"><a href="' +path+ '" ' +country+ ' id="country" data-type="select2">' +country_flag+ '</a></div>';
 	}
 
 	//Comment
-	retText += '<div class="comment_info"><a href="' +path+ '" id="comment">' +comment+'</a></div>';
+	var comment = "";
+	if (typeof node._comment !== 'undefined')
+		var comment = node._comment;
+	retText += '<div class="comment_info"><a href="' +path+ '" id="comment">' +comment+ '</a></div>';
+
+	//Tag
+	tags = parseJSONTags(node._tags);
+	if (tags == null)
+		tags = "";
+	retText += '<div class="comment_info"><a href="' +path+ '" id="tag" data-type="select2">' +tags+ '</a></div>';
+
 
 	retText += '</div>';
 	return (retText);
@@ -201,10 +221,39 @@ function setComments()
 	});
 }
 
+function getTags()
+{
+	tags_root = $(database.getXml()).find('tags');
+	var tags = [];
+
+	$(tags_root.children().each(function(){
+		tags.push($(this).text());
+	}));
+	return (tags);
+}
+
+function setTags()
+{
+	$('a#tag').editable(
+	{
+		pk: function($this) {return $(this).attr('href'); },
+		url: "/post.php",
+		emptytext: "tags",
+		select2:
+		{
+			width: 200,
+			separator: [",", " "],
+			tags: getTags(),
+			placeholder: 'Enter tags',
+		}
+	});
+}
+
 function setInfoBox()
 {
 	setComments();
 	setCountry();
+	setTags();
 }
 
 function setLoadSubDir()

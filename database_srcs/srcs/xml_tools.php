@@ -30,6 +30,9 @@ function generateFullXMLFromDir( $path )
 	$root = $dom->createElement( 'root' );
 	$dom->appendChild( $root );
 
+	$tagsRoot = $dom->createElement( 'tags' );
+	$root->appendChild( $tagsRoot );
+
 	$dirsRoot = $dom->createElement( 'dirs' );
 	$root->appendChild( $dirsRoot );
 
