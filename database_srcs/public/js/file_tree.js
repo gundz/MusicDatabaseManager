@@ -144,6 +144,7 @@ function getInfos(node)
 		if (node._tags != null)
 			tags = JSON.parse(node._tags);
 	}
+	$.unique(tags);
 	tags = parseJSONTags(tags);
 	if (tags == null)
 		tags = "";
