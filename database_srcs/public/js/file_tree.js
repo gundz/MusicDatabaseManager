@@ -31,6 +31,7 @@ function basename(path)
 function setDir(node)
 {
 	dir = {
+		_node: node,
 		_type: "dir",
 		_path: $(node).attr('path'),
 		_format: $(node).attr('format'),
@@ -48,6 +49,7 @@ function setDir(node)
 function setFile(node)
 {
 	file = {
+		_node: node,
 		_type: "file",
 		_path: $(node).attr('path'),
 		_format: $(node).attr('format'),
@@ -75,7 +77,6 @@ function parseJSONTags(tags)
 	if (tags == null)
 		return (null);
 
-	tags = JSON.parse(tags);
 	ret_tags = "";
 	$(tags).each(function(index, item){
 		ret_tags += item;
@@ -83,6 +84,14 @@ function parseJSONTags(tags)
 			ret_tags += ", ";
 	});
 	return (ret_tags);
+}
+
+function escapeStr(str)
+{
+    if (str)
+        return str.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
+
+    return str;
 }
 
 function getInfos(node)
@@ -119,7 +128,23 @@ function getInfos(node)
 	retText += '<div class="comment_info"><a href="' +path+ '" id="comment">' +comment+ '</a></div>';
 
 	//Tag
-	tags = parseJSONTags(node._tags);
+	tags = [];
+	if (node._type == "dir")
+	{
+		$(node._node).find("[path^='" + escapeStr(path)+ "'][tag]").each(function() {
+			tags = $.merge($(JSON.parse($(this).attr("tag"))), tags);
+		});
+	}
+	if (tags.length != 0 && node._tags != null)
+	{
+		tags = $.merge($(JSON.parse(node._tags)), tags);
+	}
+	else
+	{
+		if (node._tags != null)
+			tags = JSON.parse(node._tags);
+	}
+	tags = parseJSONTags(tags);
 	if (tags == null)
 		tags = "";
 	retText += '<div class="comment_info"><a href="' +path+ '" id="tag" data-type="select2">' +tags+ '</a></div>';
@@ -234,6 +259,7 @@ function getTags()
 
 function setTags()
 {
+	tags = getTags();
 	$('a#tag').editable(
 	{
 		pk: function($this) {return $(this).attr('href'); },
@@ -243,7 +269,7 @@ function setTags()
 		{
 			width: 200,
 			separator: [",", " "],
-			tags: getTags(),
+			tags: tags,
 			placeholder: 'Enter tags',
 		}
 	});
