@@ -319,7 +319,7 @@ function setLoadSubDir()
 function main()
 {
 	root = $(database.getXml()).find('dirs');
-	listDir(root.children());
+	listDir(root.children().children());
 	setInfoBox();
 	setLoadSubDir();
 }
