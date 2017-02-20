@@ -188,13 +188,31 @@ function listDir(xml, root = null, index_text = null)
 		root = $(root).parent().find('ul');
 	}
 
+	dirs = [];
+	files = [];
 	$(xml).each(function(index)
+	{
+		if (this.nodeName == 'dir')
+			dirs.push(this);
+		else if (this.nodeName == 'file')
+			files.push(this);
+	});
+
+	dirs = dirs.sort(function(a, b){
+		return basename($(a).attr("path")).localeCompare(basename($(b).attr("path")));
+	})
+	files = files.sort(function(a, b){
+		return basename($(a).attr("path")).localeCompare(basename($(b).attr("path")));
+	})
+
+	$($.merge(dirs, files)).each(function(index)
 	{
 		if (this.nodeName == 'dir')
 			root.append(parseDir(this, index, index_text));
 		else if (this.nodeName == 'file')
 			root.append(parseFile(this));
 	});
+
 	if ($(xml).length == 0)
 		root.append("<li>empty</li>");
 }

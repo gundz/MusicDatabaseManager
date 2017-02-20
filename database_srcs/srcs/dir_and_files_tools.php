@@ -12,8 +12,6 @@ function check_file_extention( $filename )
 function scanDirectory ( $dom , $path, $dirNode = null)
 {
 	$files = array_slice( scandir( $path) , 2);
-	natcasesort( $files );
-
 	if ($dirNode == null)
 	{
 		$dirNode = createDirNode( $dom , $path );
